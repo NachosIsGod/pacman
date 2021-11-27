@@ -7,8 +7,8 @@ public class Stage extends PApplet {
             "111111111111111",
             "100000000000001",
             "100111111111111",
-            "110111111111111",
-            "110111111111111",
+            "110111111000111",
+            "110111111101111",
             "110000000011111",
             "110101111011111",
             "100001000011111",
@@ -24,12 +24,23 @@ public class Stage extends PApplet {
     final int point_weight = 33;
     //final int pacman_weight = 8;
 
-    int pacmanX = 9;
-    int pacmanY = 9;
+    enum Direction{
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT,
+        NONE,
+    }
+
+    float pacmanX = 9;
+    float pacmanY = 9;
+    long lastProckTime = System.currentTimeMillis();
+    Direction pacmanDir = Direction.NONE;
+    boolean bKeyPressed = false;
 
     @Override
     public void settings(){
-        size(500,500);
+        size(497,497);
     }
 
     @Override
@@ -59,7 +70,6 @@ public class Stage extends PApplet {
                     */
                 }
             }
-
         }
     }
 
@@ -73,18 +83,35 @@ public class Stage extends PApplet {
         point(pacmanX * point_weight + point_weight/2,pacmanY * point_weight + point_weight/2);
 
         //動くよパックマンは
-        int bx = pacmanX;
-        int by = pacmanY;
+        float bx = pacmanX;
+        float by = pacmanY;
 
-        if(keyPressed){
-            if(keyCode == 37) bx--;
-            if(keyCode == 39) bx++;
-            if(keyCode == 40) by++;
-            if(keyCode == 38) by--;
+        if (!bKeyPressed && keyPressed){
+            if(keyCode == 37) pacmanDir = Direction.LEFT;
+            if(keyCode == 39) pacmanDir = Direction.RIGHT;
+            if(keyCode == 40) pacmanDir = Direction.DOWN;
+            if(keyCode == 38) pacmanDir = Direction.UP;
         }
 
-        if(bx>0 && bx<map.length && by>0 && by<map[by].length()){
-            if(map[by].charAt(bx) == '0'){
+        long now = System.currentTimeMillis();
+        long dt = now - lastProckTime;
+
+        if(dt > 20){
+            if(pacmanDir == Direction.LEFT) bx -=0.2f;
+            if(pacmanDir == Direction.RIGHT) bx +=0.2f;
+            if(pacmanDir == Direction.DOWN) by +=0.2f;
+            if(pacmanDir == Direction.UP) by -=0.2f;
+
+            lastProckTime = now;
+        }
+
+        Math.floor(bx);
+        Math.floor(by);
+        int bbx = (int)bx;
+        int bby = (int)by;
+
+        if(bx>0 && bx<map.length && by>0 && by<map[bby].length()){
+            if(map[bby].charAt(bbx) == '0'){
                 pacmanX = bx;
                 pacmanY = by;
             }
@@ -95,5 +122,7 @@ public class Stage extends PApplet {
         strokeWeight(point_weight-5);
         stroke(255,255,0);
         point(pacmanX * point_weight + point_weight/2,pacmanY * point_weight + point_weight/2);
+
+        bKeyPressed = keyPressed;
     }
 }
