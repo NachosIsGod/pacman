@@ -49,7 +49,6 @@ public class Stage extends PApplet {
         stroke(255);
 
         //壁描画
-        int x, y;
         for (int i = 0; i < map.length; i++) {
             System.out.println(map[i]);
 
@@ -83,6 +82,7 @@ public class Stage extends PApplet {
         point(pacmanX * point_weight + point_weight/2,pacmanY * point_weight + point_weight/2);
 
         //動くよパックマンは
+        //初期値のpacmanX,Yは9
         float bx = pacmanX;
         float by = pacmanY;
 
@@ -96,7 +96,7 @@ public class Stage extends PApplet {
         long now = System.currentTimeMillis();
         long dt = now - lastProckTime;
 
-        if(dt > 20){
+        if(dt > 25){
             if(pacmanDir == Direction.LEFT) bx -=0.2f;
             if(pacmanDir == Direction.RIGHT) bx +=0.2f;
             if(pacmanDir == Direction.DOWN) by +=0.2f;
@@ -105,11 +105,26 @@ public class Stage extends PApplet {
             lastProckTime = now;
         }
 
-        Math.floor(bx);
-        Math.floor(by);
+        System.out.println("bx = " + bx);
+        System.out.println("by = " + by);
+
+
+        Math.round(bx);
+        Math.round(by);
+
+        System.out.println("bx = " + bx);
+        System.out.println("by = " + by);
+
+
+        //型変換
         int bbx = (int)bx;
         int bby = (int)by;
 
+        System.out.println("bbx = " + bbx);
+        System.out.println("bby = " + bby);
+
+
+        //壁の当たり判定
         if(bx>0 && bx<map.length && by>0 && by<map[bby].length()){
             if(map[bby].charAt(bbx) == '0'){
                 pacmanX = bx;
