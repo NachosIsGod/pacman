@@ -17,7 +17,7 @@ public class Stage extends PApplet {
             "111010000011111",
             "100010111111111",
             "101110111111111",
-            "100000000000000",
+            "100000000000001",
             "111111111111111",
     };
 
@@ -40,13 +40,23 @@ public class Stage extends PApplet {
 
     @Override
     public void settings(){
-        size(497,497);
+        size(530,530);
     }
 
     @Override
     public void setup() {
         clear();
         stroke(255);
+
+        //座標描画
+        fill(255);
+        textSize(20);
+        text("1    2    3    4    5    6    7    8    9   10  11  12  13  14  15", 41, 30);
+
+        textAlign(CENTER);
+        for(int i = 0; i < 15; i++) {
+            text(i+1, 17, 55 + 33*i);
+        }
 
         //壁描画
         for (int i = 0; i < map.length; i++) {
@@ -55,14 +65,19 @@ public class Stage extends PApplet {
             for(int j=0; j<map[i].length();j++){
 
                 char c = map[i].charAt(j);
+                //i は縦、jは横
 
                 if(c == '1'){
 
+                    int numSpace = width - 497;
+
+                    //四角い壁
                     stroke(0,0,205);
-                    fill(0,0,0);
-                    rect(j * point_weight, i * point_weight, point_weight, point_weight);
+                    fill(255);
+                    rect(j * point_weight + numSpace, i * point_weight + numSpace, point_weight, point_weight);
 
                     /*
+                    //丸い壁
                     stroke(255,255,255);
                     strokeWeight(point_weight);
                     point(j * point_weight + point_weight/2, i * point_weight + point_weight/2);
@@ -78,7 +93,7 @@ public class Stage extends PApplet {
         //パックマン増殖防止
         noStroke();
         stroke(0);
-        strokeWeight(point_weight -2);
+        strokeWeight(point_weight -4);
         point(pacmanX * point_weight + point_weight/2,pacmanY * point_weight + point_weight/2);
 
         //動くよパックマンは
@@ -105,27 +120,49 @@ public class Stage extends PApplet {
             lastProckTime = now;
         }
 
+        //位置計算
+
+        //なぜかbx,yがめちゃ細かい数になってる問題修正
+        /*
+        bx *= 10;
+        bx = Math.round(bx);
+        bx /= 10;
+
+        by *= 10;
+        by = Math.round(by);
+        by /= 10;
+         */
+
+        int intBx = (int)Math.floor(bx);
+        int intBy = (int)Math.floor(by);
+        int bbx = 0, bby = 0;
+
+        int overX = Math.round((bx - intBx) * 10);
+        int overY = Math.round((by - intBy) * 10);
+
+        System.out.println("bxの10/1の位の数は" + overX);
+        System.out.println("intBx = " + intBx);
+
+        if(2 <= overX * 10 || 5 > overX ){
+            bbx = (int) Math.ceil(bx);
+        }else{
+            bbx = (int) Math.floor(bx);
+        }
+
+        if(2 <= overY * 10 || 5 > overY ){
+            bby = (int) Math.ceil(by);
+        }else{
+            bby = (int) Math.floor(by);
+        }
+
         System.out.println("bx = " + bx);
         System.out.println("by = " + by);
-
-
-        Math.round(bx);
-        Math.round(by);
-
-        System.out.println("bx = " + bx);
-        System.out.println("by = " + by);
-
-
-        //型変換
-        int bbx = (int)bx;
-        int bby = (int)by;
 
         System.out.println("bbx = " + bbx);
         System.out.println("bby = " + bby);
 
-
         //壁の当たり判定
-        if(bx>0 && bx<map.length && by>0 && by<map[bby].length()){
+        if(bbx>0 && bbx<map.length && bby>0 && bby<map[bby].length()){
             if(map[bby].charAt(bbx) == '0'){
                 pacmanX = bx;
                 pacmanY = by;
@@ -134,7 +171,7 @@ public class Stage extends PApplet {
 
         //パックマン参上
         noStroke();
-        strokeWeight(point_weight-5);
+        strokeWeight(point_weight-7);
         stroke(255,255,0);
         point(pacmanX * point_weight + point_weight/2,pacmanY * point_weight + point_weight/2);
 
