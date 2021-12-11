@@ -34,8 +34,14 @@ public class Stage extends PApplet {
 
     float pacmanX = 9;
     float pacmanY = 9;
+
+    float bx;
+    float by;
+
     long lastProckTime = System.currentTimeMillis();
+
     Direction pacmanDir = Direction.NONE;
+
     boolean bKeyPressed = false;
 
     @Override
@@ -98,8 +104,8 @@ public class Stage extends PApplet {
 
         //動くよパックマンは
         //初期値のpacmanX,Yは9
-        float bx = pacmanX;
-        float by = pacmanY;
+        bx = pacmanX;
+        by = pacmanY;
 
         if (!bKeyPressed && keyPressed){
             if(keyCode == 37) pacmanDir = Direction.LEFT;
@@ -111,7 +117,7 @@ public class Stage extends PApplet {
         long now = System.currentTimeMillis();
         long dt = now - lastProckTime;
 
-        if(dt > 25){
+        if(dt > 60){
             if(pacmanDir == Direction.LEFT) bx -=0.2f;
             if(pacmanDir == Direction.RIGHT) bx +=0.2f;
             if(pacmanDir == Direction.DOWN) by +=0.2f;
@@ -133,37 +139,29 @@ public class Stage extends PApplet {
         by /= 10;
          */
 
-        int intBx = (int)Math.floor(bx);
-        int intBy = (int)Math.floor(by);
-        int bbx = 0, bby = 0;
+        int floorBx = (int)Math.floor(bx);
+        int floorBy = (int)Math.floor(by);
+        int intBx, intBy;
 
-        int overX = Math.round((bx - intBx) * 10);
-        int overY = Math.round((by - intBy) * 10);
+        int overX = Math.round((bx - floorBx) * 10);
+        int overY = Math.round((by - floorBy) * 10);
 
-        System.out.println("bxの10/1の位の数は" + overX);
-        System.out.println("intBx = " + intBx);
-
-        if(2 <= overX * 10 || 5 > overX ){
-            bbx = (int) Math.ceil(bx);
+        if(overX >= 2 && overX <= 5){
+            intBx = (int)Math.floor(bx);
         }else{
-            bbx = (int) Math.floor(bx);
+            intBx = (int)Math.ceil(bx);
+        }
+        if(overY >= 2 && overY <= 5){
+            intBy = (int)Math.floor(by);
+        }else{
+            intBy = (int)Math.ceil(by);
         }
 
-        if(2 <= overY * 10 || 5 > overY ){
-            bby = (int) Math.ceil(by);
-        }else{
-            bby = (int) Math.floor(by);
-        }
-
-        System.out.println("bx = " + bx);
-        System.out.println("by = " + by);
-
-        System.out.println("bbx = " + bbx);
-        System.out.println("bby = " + bby);
+        System.out.println(bx + " が " + intBx + "    " + by + " が " + intBy);
 
         //壁の当たり判定
-        if(bbx>0 && bbx<map.length && bby>0 && bby<map[bby].length()){
-            if(map[bby].charAt(bbx) == '0'){
+        if(intBx>0 && intBx<map.length && intBy>0 && intBy<map[intBy].length()){
+            if(map[intBy].charAt(intBx) == '0'){
                 pacmanX = bx;
                 pacmanY = by;
             }
