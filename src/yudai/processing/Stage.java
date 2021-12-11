@@ -159,6 +159,7 @@ public class Stage extends PApplet {
 
         System.out.println(bx + " が " + intBx + "    " + by + " が " + intBy);
 
+
         //壁の当たり判定
         if(intBx>0 && intBx<map.length && intBy>0 && intBy<map[intBy].length()){
             if(map[intBy].charAt(intBx) == '0'){
