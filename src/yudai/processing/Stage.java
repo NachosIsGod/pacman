@@ -95,7 +95,6 @@ public class Stage extends PApplet {
 
     @Override
     public void draw(){
-
         //パックマン増殖防止
         noStroke();
         stroke(0);
