@@ -55,6 +55,7 @@ public class Stage extends PApplet {
         stroke(255);
 
         //座標描画
+
         fill(255);
         textSize(20);
         text("1    2    3    4    5    6    7    8    9   10  11  12  13  14  15", 41, 30);
@@ -81,13 +82,6 @@ public class Stage extends PApplet {
                     stroke(0,0,205);
                     fill(255);
                     rect(j * point_weight + numSpace, i * point_weight + numSpace, point_weight, point_weight);
-
-                    /*
-                    //丸い壁
-                    stroke(255,255,255);
-                    strokeWeight(point_weight);
-                    point(j * point_weight + point_weight/2, i * point_weight + point_weight/2);
-                    */
                 }
             }
         }
@@ -95,11 +89,13 @@ public class Stage extends PApplet {
 
     @Override
     public void draw(){
+
+        int numSpace = width - 497;
         //パックマン増殖防止
         noStroke();
         stroke(0);
         strokeWeight(point_weight -4);
-        point(pacmanX * point_weight + point_weight/2,pacmanY * point_weight + point_weight/2);
+        point(pacmanX * point_weight + point_weight/2+numSpace,pacmanY * point_weight + point_weight/2+numSpace);
 
         //動くよパックマンは
         //初期値のpacmanX,Yは9
@@ -116,62 +112,47 @@ public class Stage extends PApplet {
         long now = System.currentTimeMillis();
         long dt = now - lastProckTime;
 
-        if(dt > 60){
-            if(pacmanDir == Direction.LEFT) bx -=0.2f;
-            if(pacmanDir == Direction.RIGHT) bx +=0.2f;
-            if(pacmanDir == Direction.DOWN) by +=0.2f;
-            if(pacmanDir == Direction.UP) by -=0.2f;
+        if(dt > 25){
+            int intBx = Math.round(bx);
+            int intBy = Math.round(by);
+
+
+            if(pacmanDir == Direction.LEFT){
+                bx -=0.2f;
+                intBx = Math.round(bx - 0.5f);
+            }
+            if(pacmanDir == Direction.RIGHT){
+                bx +=0.2f;
+                intBx = Math.round(bx + 0.5f);
+            }
+            if(pacmanDir == Direction.DOWN){
+                by +=0.2f;
+                intBy = Math.round(by + 0.5f);
+            }
+            if(pacmanDir == Direction.UP){
+                by -=0.2f;
+                intBy = Math.round(by - 0.5f);
+            }
+
+            System.out.println(bx + " が " + intBx + "    " + by + " が " + intBy);
+
+            //壁の当たり判定
+            if(intBy>0 && intBy<map.length && intBx>0 && intBx<map[intBy].length()){
+                if(map[intBy].charAt(intBx) == '0'){
+                    pacmanX = bx;
+                    pacmanY = by;
+                }
+            }
 
             lastProckTime = now;
-        }
-
-        //位置計算
-
-        //なぜかbx,yがめちゃ細かい数になってる問題修正
-        /*
-        bx *= 10;
-        bx = Math.round(bx);
-        bx /= 10;
-
-        by *= 10;
-        by = Math.round(by);
-        by /= 10;
-         */
-
-        int floorBx = (int)Math.floor(bx);
-        int floorBy = (int)Math.floor(by);
-        int intBx, intBy;
-
-        int overX = Math.round((bx - floorBx) * 10);
-        int overY = Math.round((by - floorBy) * 10);
-
-        if(overX >= 2 && overX <= 5){
-            intBx = (int)Math.floor(bx);
-        }else{
-            intBx = (int)Math.ceil(bx);
-        }
-        if(overY >= 2 && overY <= 5){
-            intBy = (int)Math.floor(by);
-        }else{
-            intBy = (int)Math.ceil(by);
-        }
-
-        System.out.println(bx + " が " + intBx + "    " + by + " が " + intBy);
-
-
-        //壁の当たり判定
-        if(intBx>0 && intBx<map.length && intBy>0 && intBy<map[intBy].length()){
-            if(map[intBy].charAt(intBx) == '0'){
-                pacmanX = bx;
-                pacmanY = by;
-            }
         }
 
         //パックマン参上
         noStroke();
         strokeWeight(point_weight-7);
         stroke(255,255,0);
-        point(pacmanX * point_weight + point_weight/2,pacmanY * point_weight + point_weight/2);
+        //41, 30
+        point(pacmanX * point_weight + point_weight/2+numSpace,pacmanY * point_weight + point_weight/2+numSpace);
 
         bKeyPressed = keyPressed;
     }
