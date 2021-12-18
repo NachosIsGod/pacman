@@ -51,45 +51,18 @@ public class Stage extends PApplet {
 
     @Override
     public void setup() {
-        clear();
-        stroke(255);
-
-        //座標描画
-
-        fill(255);
-        textSize(20);
-        text("1    2    3    4    5    6    7    8    9   10  11  12  13  14  15", 41, 30);
-
-        textAlign(CENTER);
-        for(int i = 0; i < 15; i++) {
-            text(i+1, 17, 55 + 33*i);
-        }
-
-        //壁描画
-        for (int i = 0; i < map.length; i++) {
-            System.out.println(map[i]);
-
-            for(int j=0; j<map[i].length();j++){
-
-                char c = map[i].charAt(j);
-                //i は縦、jは横
-
-                if(c == '1'){
-
-                    int numSpace = width - 497;
-
-                    //四角い壁
-                    stroke(0,0,205);
-                    fill(255);
-                    rect(j * point_weight + numSpace, i * point_weight + numSpace, point_weight, point_weight);
-                }
-            }
-        }
     }
 
     @Override
     public void draw(){
+        clear();
+        stroke(255);
 
+        drawBackground();
+        drawScene();
+    }
+
+    private void drawScene(){
         int numSpace = width - 497;
         //パックマン増殖防止
         noStroke();
@@ -155,5 +128,44 @@ public class Stage extends PApplet {
         point(pacmanX * point_weight + point_weight/2+numSpace,pacmanY * point_weight + point_weight/2+numSpace);
 
         bKeyPressed = keyPressed;
+
+    }
+
+    private void drawBackground(){
+        //座標描画
+
+        fill(255);
+        textSize(20);
+        noStroke();
+        strokeWeight(0);
+        for(int i =0; i< 15; i++){
+            text(i+1, 41 + 33*i, 30);
+        }
+
+        textAlign(CENTER);
+        for(int i = 0; i < 15; i++) {
+            text(i+1, 17, 55 + 33*i);
+        }
+
+        //壁描画
+        for (int i = 0; i < map.length; i++) {
+            System.out.println(map[i]);
+
+            for(int j=0; j<map[i].length();j++){
+
+                char c = map[i].charAt(j);
+                //i は縦、jは横
+
+                if(c == '1'){
+
+                    int numSpace = width - 497;
+
+                    //四角い壁
+                    stroke(0,0,205);
+                    fill(255);
+                    rect(j * point_weight + numSpace, i * point_weight + numSpace, point_weight, point_weight);
+                }
+            }
+        }
     }
 }
