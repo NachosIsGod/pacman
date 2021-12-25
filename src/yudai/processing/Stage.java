@@ -6,8 +6,8 @@ public class Stage extends PApplet {
     String[] map = {
             "111111111111111",
             "100000010000001",
-            "101111010111101",
-            "101100000001101",
+            "100111010111001",
+            "110100000001011",
             "100001101100001",
             "101110000011101",
             "101000010000101",
@@ -43,7 +43,7 @@ public class Stage extends PApplet {
     float pacmanY = 9;
 
     float enemyX = 7;
-    float enemyY = 3;
+    float enemyY = 4;
 
     float pbx;
     float pby;
@@ -77,9 +77,8 @@ public class Stage extends PApplet {
     }
 
     private void drawEnemy() {
-        int numSpace = width - 497;
 
-        //パックマン増殖防止
+        //敵増殖防止
         noStroke();
         stroke(0);
         strokeWeight(point_weight - 4);
@@ -88,86 +87,97 @@ public class Stage extends PApplet {
         ebx = enemyX;
         eby = enemyY;
 
-        long enow = System.currentTimeMillis();
-        long edt = enow - eLastProckTime;
+        long eNow = System.currentTimeMillis();
+        long edt = eNow - eLastProckTime;
 
-        if (edt > 25) {
+        //前が進めるか判定
+        if (edt > 20) {
             int intEbx = Math.round(ebx);
             int intEby = Math.round(eby);
 
             if (enemyDir == enemyDirection.LEFT) {
-                ebx -= 0.2f;
+                ebx -= 0.1f;
                 intEbx = Math.round(ebx - 0.5f);
             }
             if (enemyDir == enemyDirection.RIGHT) {
-                ebx += 0.2f;
+                ebx += 0.1f;
                 intEbx = Math.round(ebx + 0.5f);
             }
             if (enemyDir == enemyDirection.DOWN) {
-                eby += 0.2f;
+                eby += 0.1f;
                 intEby = Math.round(eby + 0.5f);
             }
             if (enemyDir == enemyDirection.UP) {
-                eby -= 0.2f;
+                eby -= 0.1f;
                 intEby = Math.round(eby - 0.5f);
             }
 
-            //壁の当たり判定
-            if (intEby > 0 && intEby < map.length && intEbx > 0 && intEbx < map[intEby].length()) {
-                if (map[intEby].charAt(intEbx) == '0') {
-                    enemyX = ebx;
-                    enemyY = eby;
-                }else{
-                    while(map[intEby].charAt(intEbx) == '0') {
+            //壁の当たり判定と向きを変える
+            if (intEby>=0 && intEby<=map.length && intEbx>=0 && intEbx<=map[intEby].length()) {
+                while(map[intEby].charAt(intEbx) == '1') {
 
-                        double random = Math.random();
-                        System.out.println(random);
+                    double random = Math.random();
+                    System.out.println(random);
 
-                        random *= 10;
-                        System.out.println(random);
+                    random *= 10;
+                    System.out.println(random);
 
-                        random = Math.ceil(random);
-                        System.out.println(random);
+                    random = Math.ceil(random);
+                    System.out.println(random);
 
-                        random -= 2;
-                        System.out.println(random);
+                    random -= 2;
+                    System.out.println(random);
 
-                        random /= 2;
-                        System.out.println(random);
+                    random /= 2;
+                    System.out.println(random);
 
-                        random = Math.floor(random);
-                        System.out.println(random);
+                    random = Math.floor(random);
+                    System.out.println(random);
 
-                        int dirRandom = (int) random;
-                        System.out.println(dirRandom);
+                    int dirRandom = (int) random;
+                    System.out.println(dirRandom);
 
-                        switch (dirRandom) {
-                            case 1:
-                                enemyDir = enemyDirection.UP;
-                                System.out.println("↑");
-                                break;
+                    switch (dirRandom) {
+                        case 1:
+                            intEby = Math.round(enemyY-1);
+                            intEbx = Math.round(enemyX);
+                            enemyDir = enemyDirection.UP;
+                            System.out.println("↑");
+                            break;
 
-                            case 2:
-                                enemyDir = enemyDirection.DOWN;
-                                System.out.println("↓");
-                                break;
+                        case 2:
+                            intEby = Math.round(enemyY+1);
+                            intEbx = Math.round(enemyX);
+                            enemyDir = enemyDirection.DOWN;
+                            System.out.println("↓");
+                            break;
 
-                            case 3:
-                                enemyDir = enemyDirection.LEFT;
-                                System.out.println("←");
-                                break;
+                        case 3:
+                            intEby = Math.round(enemyY);
+                            intEbx = Math.round(enemyX-1);
+                            enemyDir = enemyDirection.LEFT;
+                            System.out.println("←");
+                            break;
 
-                            default:
-                                enemyDir = enemyDirection.RIGHT;
-                                System.out.println("→");
-                                break;
-                        }
+                        default:
+                            intEby = Math.round(enemyY);
+                            intEbx = Math.round(enemyX+1);
+                            enemyDir = enemyDirection.RIGHT;
+                            System.out.println("→");
+                            break;
                     }
                 }
+                enemyX = ebx;
+                enemyY = eby;
+                }else{
+                //仮
+                enemyX = 7;
+                enemyY = 4;
             }
-            eLastProckTime = enow;
+            eLastProckTime = eNow;
         }
-        //パックマン参上
+        //敵参上
+        System.out.println("書くぞ");
         noStroke();
         strokeWeight(point_weight-7);
         stroke(0,0,255);
@@ -176,7 +186,6 @@ public class Stage extends PApplet {
     }
 
     private void drawPacman(){
-        int numSpace = width - 497;
 
         //パックマン増殖防止
         noStroke();
@@ -194,38 +203,42 @@ public class Stage extends PApplet {
             if(keyCode == 38) pacmanDir = pacmanDirection.UP;
         }
 
-        long pnow = System.currentTimeMillis();
-        long pdt = pnow - pLastProckTime;
+        long pNow = System.currentTimeMillis();
+        long pdt = pNow - pLastProckTime;
 
         if(pdt > 25){
             int intPbx = Math.round(pbx);
             int intPby = Math.round(pby);
 
             if(pacmanDir == pacmanDirection.LEFT){
+                System.out.println("⇇");
                 pbx -=0.2f;
                 intPbx = Math.round(pbx - 0.5f);
             }
             if(pacmanDir == pacmanDirection.RIGHT){
+                System.out.println("⇉");
                 pbx +=0.2f;
                 intPbx = Math.round(pbx + 0.5f);
             }
             if(pacmanDir == pacmanDirection.DOWN){
+                System.out.println("⇊");
                 pby +=0.2f;
                 intPby = Math.round(pby + 0.5f);
             }
             if(pacmanDir == pacmanDirection.UP){
+                System.out.println("⇈");
                 pby -=0.2f;
                 intPby = Math.round(pby - 0.5f);
             }
 
             //壁の当たり判定
-            if(intPby>0 && intPby<map.length && intPbx>0 && intPbx<map[intPby].length()){
+            if(intPby>=0 && intPby<=map.length && intPbx>=0 && intPbx<=map[intPby].length()){
                 if(map[intPby].charAt(intPbx) == '0'){
                     pacmanX = pbx;
                     pacmanY = pby;
                 }
             }
-            pLastProckTime = pnow;
+            pLastProckTime = pNow;
         }
 
         //パックマン参上
