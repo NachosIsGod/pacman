@@ -118,7 +118,7 @@ public class Stage extends PApplet {
                     enemyX = ebx;
                     enemyY = eby;
                 }else{
-                    //while( !(intEby > 0 && intEby < map.length && intEbx > 0 && intEbx < map[intEby].length()) ) {
+                    while(map[intEby].charAt(intEbx) == '0') {
 
                         double random = Math.random();
                         System.out.println(random);
@@ -157,12 +157,12 @@ public class Stage extends PApplet {
                                 System.out.println("←");
                                 break;
 
-                            case 4:
+                            default:
                                 enemyDir = enemyDirection.RIGHT;
                                 System.out.println("→");
                                 break;
                         }
-                    //}
+                    }
                 }
             }
             eLastProckTime = enow;
