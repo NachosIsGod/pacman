@@ -12,11 +12,11 @@ public class Stage extends PApplet {
             "101110000011101",
             "101000010000101",
             "101011000110101",
-            "100011101100001",
+            "100011101110001",
             "100111000111001",
             "110000010000011",
             "100100111001001",
-            "110110000011011",
+            "101110000011101",
             "100000010000001",
             "111111111111111",
     };
@@ -51,7 +51,7 @@ public class Stage extends PApplet {
     float ebx;
     float eby;
 
-    int numSpace = width - 497;
+    int numSpace;
 
     long eLastProckTime = System.currentTimeMillis();
     long pLastProckTime = System.currentTimeMillis();
@@ -62,18 +62,47 @@ public class Stage extends PApplet {
 
     boolean bKeyPressed = false;
 
+
     @Override
     public void settings(){
         size(530,530);
     }
 
     @Override
+    public void setup() {
+        numSpace = width -497;
+
+        //numSpace = 0;
+    }
+
+    @Override
     public void draw(){
         clear();
 
+        drawFeed();
         drawBackground();
         drawEnemy();
         drawPacman();
+    }
+
+    private void drawFeed(){
+
+        for (int i = 0; i < map.length; i++) {
+
+            for(int j=0; j<map[i].length();j++){
+
+                char c = map[i].charAt(j);
+                //i は縦、jは横
+
+                if(c == '0'){
+
+                    //餌をばらまく
+                    strokeWeight(5);
+                    stroke(245,222,179);
+                    point(j * point_weight + point_weight/2+numSpace,i * point_weight + point_weight/2+numSpace);
+                }
+            }
+        }
     }
 
     private void drawEnemy() {
@@ -177,10 +206,9 @@ public class Stage extends PApplet {
             eLastProckTime = eNow;
         }
         //敵参上
-        System.out.println("書くぞ");
         noStroke();
         strokeWeight(point_weight-7);
-        stroke(0,0,255);
+        stroke(255,0,0);
         point(enemyX * point_weight + point_weight/2+numSpace,enemyY * point_weight + point_weight/2+numSpace);
 
     }
@@ -206,34 +234,30 @@ public class Stage extends PApplet {
         long pNow = System.currentTimeMillis();
         long pdt = pNow - pLastProckTime;
 
-        if(pdt > 25){
+        if(pdt > 40){
             int intPbx = Math.round(pbx);
             int intPby = Math.round(pby);
 
             if(pacmanDir == pacmanDirection.LEFT){
-                System.out.println("⇇");
                 pbx -=0.2f;
                 intPbx = Math.round(pbx - 0.5f);
             }
             if(pacmanDir == pacmanDirection.RIGHT){
-                System.out.println("⇉");
                 pbx +=0.2f;
                 intPbx = Math.round(pbx + 0.5f);
             }
             if(pacmanDir == pacmanDirection.DOWN){
-                System.out.println("⇊");
                 pby +=0.2f;
                 intPby = Math.round(pby + 0.5f);
             }
             if(pacmanDir == pacmanDirection.UP){
-                System.out.println("⇈");
                 pby -=0.2f;
                 intPby = Math.round(pby - 0.5f);
             }
 
             //壁の当たり判定
             if(intPby>=0 && intPby<=map.length && intPbx>=0 && intPbx<=map[intPby].length()){
-                if(map[intPby].charAt(intPbx) == '0'){
+                if(! (map[intPby].charAt(intPbx) == '1') ){
                     pacmanX = pbx;
                     pacmanY = pby;
                 }
@@ -248,6 +272,16 @@ public class Stage extends PApplet {
         point(pacmanX * point_weight + point_weight/2+numSpace,pacmanY * point_weight + point_weight/2+numSpace);
 
         bKeyPressed = keyPressed;
+
+        int ix = Math.round(pacmanX);
+        int iy = Math.round(pacmanY);
+
+        if(map[iy].charAt(ix) == '0') {
+            String str = replace(map[iy], ix+1, 'X');
+            map[iy] = map[iy].substring(0,1);
+            map[iy] = map[iy].replace("1", str);
+            System.out.println(map[iy]);
+        }
     }
 
     private void drawBackground(){
@@ -275,14 +309,28 @@ public class Stage extends PApplet {
 
                 if(c == '1'){
 
-                    int numSpace = width - 497;
-
                     //四角い壁
+                    strokeWeight(3);
                     stroke(0,0,205);
-                    fill(255);
+                    fill(0);
                     rect(j * point_weight + numSpace, i * point_weight + numSpace, point_weight, point_weight);
                 }
             }
+        }
+    }
+    public static String replace(String line, int x, char c){
+        if(x > 0 && x < line.length()) {
+            String a = line.substring(0, x - 1);
+            String b = line.substring(x);
+            return a + c + b;
+
+        }else if( x == 0){
+            return c + line.substring(x+1);
+
+        }else if( x == line.length())
+            return line.substring(0, line.length()-1) + c;
+        else{
+            return "error";
         }
     }
 }
